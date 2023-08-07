@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check-In</title>
+    <style>
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+        
+        body {
+            text-align: center;
+	    background-image: url('file:///C:/Users/tmob/Desktop/CYL/Backgrounds/Craft-Your-Life_App-Background.jpg');
+ 	    background-repeat: no-repeat;
+	    background-attachment: fixed;
+	    background-size: 100% 100%;
+	    font-family: Garamond;
+        }
+        
+        h1 {
+            margin-top: 20px;
+	    font-weight: 500;
+	    font-size: 30px;
+        }
+        
+        .question {
+            margin-top: 40px;
+            font-size: 18px;
+        }
+        
+        .button-container {
+            margin-top: 20px;
+        }
+        
+        .button {
+            width: 100px;
+            height: 40px;
+            border: none;
+            border-radius: 6px;
+	    font-family: Garamond;
+            font-size: 17px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        
+        .green {
+            background-color: #d4edbc;
+            color: #11734b;
+        }
+        
+        .yellow {
+            background-color: #ffe5a0;
+            color: #473821;
+        }
+        
+        .red {
+            background-color: #ffcfc9;
+            color: #b10202;
+        }
+        
+        .text-container {
+            margin-top: 20px;
+        }
+        
+        .text-input {
+            width: 300px;
+            height: 80px;
+            resize: none;
+            font-size: 16px;
+	    font-family: Garamond;
+  	    border: 2px solid #ccc;
+	    border-radius: 4px;
+	    background-color: #f8f8f8;
+        }
+        
+        .navigation-buttons {
+            margin-top: 20px;
+        }
+        
+        .navigation-button {
+            width: 100px;
+            height: 40px;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            margin: 10px;
+            cursor: pointer;
+	    font-family: Garamond;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .message {
+            margin-top: 40px;
+            font-size: 24px;
+        }
+        
+        /* Stil für Frage 2 */
+        #question2Answer {
+            font-weight: bold;
+        }
+
+        #question2Answer.good {
+            color: #8BC34A; /* Grün für "Gut" */
+        }
+
+        #question2Answer.medium {
+            color: #FFEB3B; /* Gelb für "Mittel" */
+        }
+
+        #question2Answer.bad {
+            color: #FF5722; /* Rot für "Schlecht" */
+        }
+    </style>
+</head>
+<body>
+    <div id="questionSection" class="question">
+        <h1>Hallo! Es ist schön, dass du da bist!</h2>
+        <button id="startButton" class="button" onclick="startCheckIn()">Check-In</button>
+        
+        <!-- Frage 1 -->
+        <div id="question1" class="hidden">
+            <p id="randomQuestion"></p>
+            <div class="button-container">
+                <button class="button green" onclick="nextQuestion('Gut')">Gut</button>
+                <button class="button yellow" onclick="nextQuestion('Mittel')">Mittel</button>
+                <button class="button red" onclick="nextQuestion('Schlecht')">Schlecht</button>
+            </div>
+        </div>
+        
+        <!-- Fragen 2-4 -->
+        <div id="question2" class="hidden">
+            <p>Erkläre in wenigen Worten, warum du <span id="question2Answer"></span> gewählt hast:</p>
+            <div class="text-container">
+                <textarea id="explanation" class="text-input"></textarea>
+            </div>
+            <div class="navigation-buttons">
+                <button class="navigation-button" onclick="previousQuestion()">Zurück</button>
+                <button class="navigation-button" onclick="nextQuestion('')">Weiter</button>
+            </div>
+        </div>
+        
+        <div id="question3" class="hidden">
+            <p>Wofür bist du jetzt gerade dankbar?</p>
+            <div class="text-container">
+                <textarea id="gratitude" class="text-input"></textarea>
+            </div>
+            <div class="navigation-buttons">
+                <button class="navigation-button" onclick="previousQuestion()">Zurück</button>
+                <button class="navigation-button" onclick="nextQuestion('')">Weiter</button>
+            </div>
+        </div>
+        
+        <div id="question4" class="hidden">
+            <p>Woran möchtest du bis zum nächsten Check-In arbeiten?</p>
+            <div class="text-container">
+                <textarea id="work" class="text-input"></textarea>
+            </div>
+            <div class="navigation-buttons">
+                <button class="navigation-button" onclick="previousQuestion()">Zurück</button>
+                <button class="navigation-button" onclick="finishSurvey()"><b>Abschließen</b></button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="messageSection" class="message hidden">
+        <h1>Alles Gute für deinen restlichen Tag!</h1>
+    </div>
+    
+    <script>
+        var currentQuestion = 1;
+        var questions = {
+            'Morgens': [
+                'Wie konzentriert und aufmerksam fühlst du dich?',
+                'Wie fühlst du dich körperlich und geistig in der Mitte des Tages?',
+                'Hast du bisher Fortschritte bei deinen Zielen gemacht?',
+                'Wie zufrieden bist du mit deiner bisherigen Leistung?',
+                'Hast du bisher Momente der Achtsamkeit oder Entspannung erlebt?',
+                'Wie hat sich deine Stimmung im Vergleich zum Morgen verändert?',
+                'Wie haben Beziehungen oder soziale Interaktionen deinen Tag bisher beeinflusst?',
+                'Wie gut bist du bisher mit Stress oder Herausforderungen umgegangen?',
+                'Wie fühlst du dich jetzt, da der Tag zu Ende geht?',
+                'Hast du deine Ziele für den Tag erreicht?',
+                'Wie zufrieden bist du mit deinem Tag insgesamt?',
+                'Hast du am Abend Momente der Achtsamkeit oder Entspannung erlebt?',
+                'Wie hat sich deine Stimmung über den Tag entwickelt?',
+                'Wie haben Beziehungen oder soziale Interaktionen deinen Tag beeinflusst?',
+                'Hast du genug für dich selbst gesorgt? Bist du ausreichend versorgt?'
+            ],
+            'Mittags': [
+                'Wie fühlst du dich heute Morgen insgesamt?',
+                'Wie ist dein aktuelles Energielevel?',
+                'Wie bewertest du deinen Stresslevel?',
+                'Wie motiviert fühlst du dich, deine Ziele heute zu erreichen?',
+                'Wie gut hast du heute geschlafen?',
+                'Wie konzentriert und aufmerksam fühlst du dich?',
+                'Wie optimistisch oder pessimistisch bist du heute?',
+            ],
+            'Abends': [
+                'HIER KÖNNTEN FRAGEN FÜR ABENDS STEHEN',
+                'HIER KÖNNTEN FRAGEN FÜR ABENDS STEHEN'
+            ]
+        };
+        
+        function startCheckIn() {
+            document.getElementById("startButton").classList.add("hidden");
+            document.getElementById("question1").classList.remove("hidden");
+            generateRandomQuestion();
+        }
+        
+        function generateRandomQuestion() {
+            var randomIndex = Math.floor(Math.random() * questions['Morgens'].length);
+            var question = questions['Morgens'][randomIndex];
+            document.getElementById("randomQuestion").innerText = question;
+        }
+        
+        function nextQuestion(answer) {
+            if (currentQuestion === 1) {
+                document.getElementById("question1").classList.add("hidden");
+                document.getElementById("question2").classList.remove("hidden");
+                document.getElementById("question2Answer").innerText = answer;
+                document.getElementById("question2Answer").classList.add(answer.toLowerCase());
+            } else if (currentQuestion === 2) {
+                document.getElementById("question2").classList.add("hidden");
+                document.getElementById("question3").classList.remove("hidden");
+            } else if (currentQuestion === 3) {
+                document.getElementById("question3").classList.add("hidden");
+                document.getElementById("question4").classList.remove("hidden");
+            }
+            
+            currentQuestion++;
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion === 2) {
+                document.getElementById("question2").classList.add("hidden");
+                document.getElementById("question1").classList.remove("hidden");
+            } else if (currentQuestion === 3) {
+                document.getElementById("question3").classList.add("hidden");
+                document.getElementById("question2").classList.remove("hidden");
+            } else if (currentQuestion === 4) {
+                document.getElementById("question4").classList.add("hidden");
+                document.getElementById("question3").classList.remove("hidden");
+            }
+            
+            currentQuestion--;
+        }
+        
+        function finishSurvey() {
+            document.getElementById("questionSection").classList.add("hidden");
+            document.getElementById("messageSection").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
